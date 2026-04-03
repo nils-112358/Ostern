@@ -7,10 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f2b24; /* Dunkelgrüner Hintergrund */
-            --bunny-color: #1a3c34; /* Dunkles Grün für den Hasenkörper */
-            --bunny-pink: #ff9dd3; /* Rosa für die Ohren */
-            --text-color: #ffffff;
+            --bg-color: #0f2b24; 
+            --bunny-color: #f0f0f0; /* Hellgrau/Weiß für den Körper */
             --egg-pink: #ff9dd3;
             --egg-blue: #a8dadc;
         }
@@ -20,7 +18,7 @@
         body {
             font-family: 'Playfair Display', serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: #fff;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -29,194 +27,107 @@
             position: relative;
         }
 
-        /* --- Text Styling (Zentriert und klar) --- */
         .content {
             position: relative;
-            z-index: 50; /* Über dem Hasen */
+            z-index: 100;
             text-align: center;
-            pointer-events: none; /* Man kann durch den Text auf Eier klicken */
+            pointer-events: none;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             font-size: clamp(2.5rem, 8vw, 5rem);
-            margin-bottom: 10px;
             text-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        p {
-            font-size: clamp(1rem, 4vw, 1.4rem);
-            font-style: italic;
-            opacity: 0.9;
-        }
-
-        /* --- DER PEEK-A-BOO HASE (MIT KÖRPER) --- */
-        #bunny-logic-container {
+        /* --- Der Hase --- */
+        #bunny-container {
             position: absolute;
-            width: 250px; /* Schön groß und präsent */
-            height: auto;
-            z-index: 10; /* Hinter dem Text */
+            width: 220px; /* Kompakte Größe */
+            height: 280px;
+            z-index: 10;
             opacity: 0;
             transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; /* Hase stört nicht beim Klicken */
+            pointer-events: none;
         }
 
-        /* Ohren-Wackeln */
-        .ear-anim {
-            animation: earWiggle 2s ease-in-out infinite;
-            transform-origin: center;
-        }
-        @keyframes earWiggle {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(5deg); }
-        }
+        /* Positionen */
+        .pos-top    { top: -300px; left: 50%; transform: translateX(-50%); }
+        .show-top   { transform: translateX(-50%) translateY(320px); opacity: 1 !important; }
 
-        /* --- Positionen für den Hasen --- */
-        
-        /* Guckt von oben */
-        .pos-top    { top: -200px; left: 50%; transform: translateX(-50%); }
-        .show-top   { transform: translateX(-50%) translateY(250px); opacity: 1 !important; }
-
-        /* Lugt von unten */
-        .pos-bottom { bottom: -200px; left: 50%; transform: translateX(-50%); }
-        .show-bottom { transform: translateX(-50%) translateY(-250px); opacity: 1 !important; }
-
-        /* Guckt von links */
-        .pos-left   { left: -200px; top: 50%; transform: translateY(-50%) rotate(90deg); }
-        .show-left  { transform: translateY(-50%) rotate(90deg) translate(250px); opacity: 1 !important; }
-
-        /* Guckt von rechts */
-        .pos-right  { right: -200px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
-        .show-right { transform: translateY(-50%) rotate(-90deg) translate(-250px); opacity: 1 !important; }
+        .pos-bottom { bottom: -300px; left: 50%; transform: translateX(-50%); }
+        .show-bottom { transform: translateX(-50%) translateY(-220px); opacity: 1 !important; }
 
         /* Fall-Animation */
-        .fall-start { top: -300px; left: 50%; transform: translateX(-50%); opacity: 1 !important; transition: transform 3s linear !important; }
-        .fall-end   { transform: translateX(-50%) translateY(120vh); }
+        .fall-start { top: -350px; left: 50%; transform: translateX(-50%); opacity: 1 !important; transition: transform 3s linear !important; }
+        .fall-end   { transform: translateX(-50%) translateY(130vh); }
 
-        /* --- GESTREIFTE OSTEREIER --- */
+        /* --- Gestreifte Eier --- */
         .egg {
             position: absolute;
             width: 50px; height: 70px;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            opacity: 0.7;
             z-index: 5;
-            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.3);
-            animation: float 5s ease-in-out infinite;
-        }
-
-        /* Ei 1: Pink-gestreift */
-        .egg-pink-striped {
-            top: 15%; left: 15%;
-            background: linear-gradient(var(--egg-pink) 20%, transparent 20%, transparent 40%, var(--egg-pink) 40%, var(--egg-pink) 60%, transparent 60%, transparent 80%, var(--egg-pink) 80%);
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2);
             background-color: #fff;
-            animation-delay: 0s;
         }
 
-        /* Ei 2: Blau-gestreift */
-        .egg-blue-striped {
-            bottom: 20%; right: 20%;
-            background: linear-gradient(var(--egg-blue) 20%, transparent 20%, transparent 40%, var(--egg-blue) 40%, var(--egg-blue) 60%, transparent 60%, transparent 80%, var(--egg-blue) 80%);
-            background-color: #fff;
-            animation-delay: 1s;
+        .egg-pink {
+            top: 20%; left: 15%;
+            background: repeating-linear-gradient(45deg, var(--egg-pink), var(--egg-pink) 10px, #fff 10px, #fff 20px);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-        }
-
-        /* Mobil-Anpassung */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            p { font-size: 1.1rem; }
-            #bunny-logic-container { width: 180px; }
-            .egg { width: 40px; height: 55px; }
+        .egg-blue {
+            bottom: 20%; right: 15%;
+            background: repeating-linear-gradient(-45deg, var(--egg-blue), var(--egg-blue) 10px, #fff 10px, #fff 20px);
         }
     </style>
 </head>
 <body>
 
-    <div class="egg egg-pink-striped"></div>
-    <div class="egg egg-blue-striped"></div>
+    <div class="egg egg-pink"></div>
+    <div class="egg egg-blue"></div>
 
     <div class="content">
         <h1>Frohe Ostern</h1>
-        <p>Genieße die Feiertage und die<br>ersten warmen Sonnenstrahlen.</p>
+        <p>Genieße die Feiertage!</p>
     </div>
 
-    <div id="bunny-logic-container">
-        <svg viewBox="0 0 728 914" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g id="Drawing">
-                <g id="in-drawing">
-                    <g id="leftEar">
-                        <path class="ear-anim" d="M128.977 175.833C161.935 151.115 208.536 157.998 233.067 191.206C311.87 297.883 301.251 409.044 301.251 409.044Z" fill="var(--bunny-color)" />
-                    </g>
-                    <g id="rightEar">
-                        <path class="ear-anim" d="M598.022 175.833C565.065 151.115 518.464 157.998 493.933 191.206C415.13 297.883 425.749 409.044 425.749 409.044Z" fill="var(--bunny-color)" />
-                    </g>
-                    <path d="M145.632 584.077C145.632 380.247 221.847 263.415 361.619 263.415C501.39 263.415 577.605 380.247 577.605 584.077L556.767 646.56H166.471L145.632 584.077Z" fill="var(--bunny-color)" />
-                    <g id="face">
-                        <path d="M274.598 406.141C269.245 406.141 264.908 410.513 264.908 415.905V432.732Z" fill="#fff" />
-                        <path d="M448.418 406.141C443.065 406.141 438.728 410.513 438.728 415.905V432.732Z" fill="#fff" />
-                        <path d="M401.996 433.001C396.643 433.001 392.306 437.373 392.306 442.765C381.878 453.273 371.451 442.765 361.761 433.001C352.071 442.765 341.643 453.273 331.216 442.765C321.526 433.001 311.836 442.765 311.836 459.327 341.643 472.8 381.878 472.8C411.686 459.327 411.686 442.765 401.996 433.001Z" fill="#fff" />
-                    </g>
-                </g>
-            </g>
+    <div id="bunny-container">
+        <svg viewBox="0 0 728 914" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 175c33-24 80-17 105 16 78 106 68 218 68 218Z" fill="var(--bunny-color)" />
+            <path d="M600 175c-33-24-80-17-105 16-78 106-68 218-68 218Z" fill="var(--bunny-color)" />
+            <path d="M145 584c0-204 76-321 216-321s216 117 216 321l-21 62H166l-21-62Z" fill="var(--bunny-color)" />
+            <circle cx="274" cy="425" r="10" fill="#333" />
+            <circle cx="448" cy="425" r="10" fill="#333" />
+            <path d="M340 450q22 15 44 0" stroke="#333" stroke-width="5" fill="none" stroke-linecap="round" />
         </svg>
     </div>
 
     <script>
-        const bunny = document.getElementById('bunny-logic-container');
-        const actions = ['top', 'bottom', 'left', 'right', 'fall'];
+        const bunny = document.getElementById('bunny-container');
+        const actions = ['top', 'bottom', 'fall'];
 
-        // Funktion, um den Hasen zurückzusetzen
-        function resetBunny() {
-            bunny.className = ''; 
-            bunny.style.cssText = ''; 
-        }
-
-        // Die Haupt-Logik
-        function triggerAction() {
-            resetBunny(); // Sauberen Zustand herstellen
-
-            // Eine zufällige Aktion auswählen
+        function trigger() {
+            bunny.style.transition = 'all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            bunny.className = '';
             const action = actions[Math.floor(Math.random() * actions.length)];
 
             if (action === 'fall') {
                 bunny.classList.add('fall-start');
-                // Kurz warten, damit die Startposition gesetzt ist, dann fallen lassen
-                setTimeout(() => {
-                    bunny.classList.add('fall-end');
-                }, 100);
-                // Länger warten für den Fall (5s)
-                setTimeout(startCycle, 5000);
+                setTimeout(() => bunny.classList.add('fall-end'), 50);
+                setTimeout(trigger, 4000);
             } else {
-                // Peek-Aktionen
                 bunny.classList.add('pos-' + action);
-                // Kurz warten, dann herein lugen
+                setTimeout(() => bunny.classList.add('show-' + action), 50);
                 setTimeout(() => {
-                    bunny.classList.add('show-' + action);
-                }, 100);
-
-                // Wie lange bleibt er sichtbar? (2s)
-                setTimeout(() => {
-                    bunny.style.opacity = '0'; // Sanftes Ausblenden
-                    // Nach dem Ausblenden komplett zurücksetzen und warten (2-5s)
-                    setTimeout(startCycle, Math.random() * 3000 + 2000);
+                    bunny.style.opacity = '0';
+                    setTimeout(trigger, Math.random() * 2000 + 1500);
                 }, 2000);
             }
         }
 
-        // Funktion, um den Zyklus mit einer zufälligen Verzögerung zu starten
-        function startCycle() {
-            // Nach dem Start der Seite: Sofortige Aktion (0ms)
-            // Im laufenden Betrieb: Zufällige Wartezeit (0s)
-            triggerAction();
-        }
-
-        // Startet das Spiel, wenn die Seite geladen ist
-        window.onload = startCycle;
+        window.onload = trigger;
     </script>
-
 </body>
 </html>
