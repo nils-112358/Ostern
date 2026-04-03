@@ -2,23 +2,22 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Frohe Ostern</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frohe Ostern - Peek-a-Boo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f2b24; /* Noch tieferes Dunkelgrün für mehr Eleganz */
+            --bg-color: #0f2b24; /* Tiefes Dunkelgrün für Eleganz */
+            --bunny-form-color: #081a16; /* Fast unsichtbares Grün für die Form */
             --text-color: #ffffff;
-            --egg-pink: #ff9dd3;
+            --accent-pink: #ff9dd3;
             --egg-blue: #a8dadc;
-            --egg-yellow: #f4d35e;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -29,53 +28,83 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Wichtig für das Versteckspiel */
             position: relative;
         }
 
-        /* --- Animierter Text --- */
+        /* --- Subtile Hintergrund-Textur --- */
+        .texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        /* --- Text Inhalt (zentriert) --- */
         .content {
             position: relative;
             z-index: 20;
             text-align: center;
             padding: 20px;
-            pointer-events: none; /* Man kann durch den Text auf die Eier "klicken" */
+            pointer-events: none; /* Man kann "durch" den Text klicken */
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             font-size: 5rem;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out forwards;
         }
 
         p {
             font-size: 1.4rem;
             font-style: italic;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out 0.8s forwards;
             line-height: 1.4;
+            opacity: 0.9;
         }
 
-        /* --- Der zentrierte Hase --- */
-        .bunny-container {
+        /* --- Die schwebenden, gemusterten Eier --- */
+        .egg {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 5;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 10;
+            opacity: 0.7;
+            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.2);
+            animation: float 5s ease-in-out infinite;
         }
 
-        .easter-bunny-svg {
-            width: 80vh; /* Passt sich der Höhe an, perfekt für iPads */
-            max-width: 90vw;
+        .egg-1 { background-color: var(--accent-pink); top: 15%; left: 15%; animation-delay: 0s; }
+        .egg-2 { background-color: var(--egg-blue); top: 70%; right: 20%; animation-delay: 1s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* =========================================
+           --- Der Peek-a-Boo Hase (JavaScript gesteuert) ---
+           ========================================= */
+        
+        #bunny-mob {
+            position: absolute;
+            width: 150px; /* Schön klein und dezent */
+            height: auto;
+            z-index: 5; /* Hinter dem Text */
+            opacity: 0; /* Startet unsichtbar */
+            transition: transform 0.6s ease-out, opacity 0.3s ease;
+            pointer-events: none; /* Hase stört nicht beim Klicken */
+        }
+
+        /* Basis-Form des Hasen */
+        .bunny-svg {
+            width: 100%;
             height: auto;
             opacity: 0.4; /* Dezent im Hintergrund */
-            transform: translateY(10%);
         }
 
         /* Ohren-Wackeln */
@@ -86,103 +115,420 @@
 
         @keyframes wiggle {
             0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(5deg) translateY(-10px); }
+            50% { transform: rotate(5deg); }
         }
 
-        /* --- Ostereier mit Mustern --- */
-        .egg {
-            position: absolute;
-            width: 60px;
-            height: 85px;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            z-index: 10;
-            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.3);
-            animation: float 5s ease-in-out infinite;
+        /* --- Die Animations-Klassen --- */
+        
+        /* Guckt kurz von oben rein */
+        .bunny-mob.peek-top {
+            opacity: 1;
+            top: -100px; /* Startposition außerhalb */
+            left: 50%;
+            transform: translateX(-50%) translateY(100px); /* Guckt rein */
         }
 
-        /* Ei 1: Gestreift */
-        .egg-striped {
-            background: linear-gradient(var(--egg-pink) 20%, transparent 20%, transparent 40%, var(--egg-pink) 40%, var(--egg-pink) 60%, transparent 60%, transparent 80%, var(--egg-pink) 80%);
-            background-color: #fff;
-            top: 15%; left: 15%;
-            animation-delay: 0s;
+        /* Lugt von unten hoch */
+        .bunny-mob.peek-bottom {
+            opacity: 1;
+            bottom: -100px; /* Startposition außerhalb */
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px); /* Lugt hoch */
         }
 
-        /* Ei 2: Zacken (Zick-Zack via Gradient) */
-        .egg-zigzag {
-            background: 
-                linear-gradient(135deg, var(--egg-blue) 25%, transparent 25%),
-                linear-gradient(225deg, var(--egg-blue) 25%, transparent 25%),
-                linear-gradient(45deg, var(--egg-blue) 25%, transparent 25%),
-                linear-gradient(315deg, var(--egg-blue) 25%, #fff 25%);
-            background-position: 10px 0, 10px 0, 0 0, 0 0;
-            background-size: 20px 20px;
-            background-repeat: repeat;
-            top: 70%; left: 20%;
-            animation-delay: 1s;
+        /* Guckt von links rein (um 90 Grad gedreht) */
+        .bunny-mob.peek-left {
+            opacity: 1;
+            left: -100px; /* Startposition außerhalb */
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg) translateX(100px); /* Guckt rein */
         }
 
-        /* Ei 3: Punkte */
-        .egg-dots {
-            background-color: var(--egg-yellow);
-            background-image: radial-gradient(#fff 20%, transparent 20%);
-            background-size: 15px 15px;
-            top: 20%; right: 20%;
-            animation-delay: 2s;
+        /* Guckt von rechts rein (um -90 Grad gedreht) */
+        .bunny-mob.peek-right {
+            opacity: 1;
+            right: -100px; /* Startposition außerhalb */
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg) translateX(-100px); /* Guckt rein */
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(10deg); }
+        /* Fällt einmal komplett durch */
+        .bunny-mob.fall-through {
+            opacity: 0.8;
+            top: -200px; /* Startposition weit oben */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 3s linear, opacity 0.5s ease; /* Langsamer Fall */
+        }
+        .bunny-mob.fall-through.falling {
+            transform: translateX(-50%) translateY(120vh); /* Fällt nach unten raus */
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- iPhone & iPad Optimierung --- */
-        @media (max-width: 768px) {
+        /* Mobil-Anpassung */
+        @media (max-width: 600px) {
             h1 { font-size: 3rem; }
             p { font-size: 1.1rem; }
-            .easter-bunny-svg { width: 60vh; }
-            .egg { width: 45px; height: 60px; }
-        }
-
-        @media (max-width: 480px) {
-            h1 { font-size: 2.5rem; }
-            .easter-bunny-svg { width: 50vh; transform: translateY(15%); }
+            #bunny-mob { width: 100px; } /* Noch kleiner auf Handys */
         }
     </style>
 </head>
 <body>
 
-    <div class="egg egg-striped"></div>
-    <div class="egg egg-zigzag"></div>
-    <div class="egg egg-dots"></div>
+    <div class="texture"></div>
 
-    <div class="bunny-container">
-        <svg class="easter-bunny-svg" viewBox="0 0 728 914" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g id="in-drawing">
-                <g id="leftEar">
-                    <path d="M128.977 175.833C161.935 151.115 208.536 157.998 233.067 191.206C311.87 297.883 301.251 409.044 301.251 409.044C301.251 409.044 192.523 387.391 113.72 280.714C89.1897 247.506 96.0204 200.549 128.977 175.833Z" fill="#FF9DD3" />
-                </g>
-                <g id="rightEar">
-                    <path d="M598.022 175.833C565.065 151.115 518.464 157.998 493.933 191.206C415.13 297.883 425.749 409.044 425.749 409.044C425.749 409.044 534.476 387.391 613.279 280.714C637.81 247.506 630.98 200.549 598.022 175.833Z" fill="#FF9DD3" />
-                </g>
-                <path d="M145.632 584.077C145.632 380.247 221.847 263.415 361.619 263.415C501.39 263.415 577.605 380.247 577.605 584.077L556.767 646.56H166.471L145.632 584.077Z" fill="white" />
-                <g id="face">
-                    <path d="M274.598 406.141C269.245 406.141 264.908 410.513 264.908 415.905V432.732C264.908 438.124 269.245 442.496 274.598 442.496C279.95 442.496 284.287 438.124 284.287 432.732V415.905C284.287 410.513 279.949 406.141 274.598 406.141Z" fill="#423E4F" />
-                    <path d="M448.418 406.141C443.065 406.141 438.728 410.513 438.728 415.905V432.732C438.728 438.124 443.065 442.496 448.418 442.496C453.771 442.496 458.108 438.124 458.108 432.732V415.905C458.108 410.513 453.769 406.141 448.418 406.141Z" fill="#423E4F" />
-                    <path d="M401.996 433.001C396.643 433.001 392.306 437.373 392.306 442.765C381.878 453.273 371.451 442.765C361.761 433.001 352.071 442.765 341.643 453.273C331.216 442.765 321.526 433.001 311.836 442.765C311.836 459.327 341.643 472.8 381.878 472.8C411.686 459.327 411.686 442.765 401.996 433.001Z" fill="#423E4F" />
-                </g>
-            </g>
-        </svg>
-    </div>
+    <div class="egg egg-1"></div>
+    <div class="egg egg-2"></div>
 
     <div class="content">
         <h1>Frohe Ostern</h1>
         <p>Genieße die Feiertage und die<br>ersten warmen Sonnenstrahlen.</p>
     </div>
+
+    <div id="bunny-mob" class="bunny-mob">
+        <svg class="bunny-svg" viewBox="0 0 728 914" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id=" Drawing">
+                <g id="in-drawing">
+                    <g id="leftEar">
+                        <path d="M128.977 175.833C161.935 151.115 208.536 157.998 233.067 191.206C311.87 297.883 301.251 409.044 301.251 409.044Z" fill="var(--bunny-form-color)" />
+                    </g>
+                    <g id="rightEar">
+                        <path d="M598.022 175.833C565.065 151.115 518.464 157.998 493.933 191.206C415.13 297.883 425.749 409.044 425.749 409.044Z" fill="var(--bunny-form-color)" />
+                    </g>
+                    <g id="face">
+                        <path d="M274.598 406.141C269.245 406.141 264.908 410.513 264.908 415.905V432.732Z" fill="#fff" />
+                        <path d="M448.418 406.141C443.065 406.141 438.728 410.513 438.728 415.905V432.732Z" fill="#fff" />
+                        <path d="M401.996 433.001C396.643 433.001 392.306 437.373 392.306 442.765C381.878 453.273 371.451 442.765 361.761 433.001C352.071 442.765 341.643 453.273 331.216 442.765C321.526 433.001 311.836 442.765 311.836 459.327 341.643 472.8 381.878 472.8 411.686 459.327 411.686 442.765 401.996 433.001Z" fill="#fff" />
+                    </g>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        const bunny = document.getElementById('bunny-mob');
+        const actions = ['peekTop', 'peekBottom', 'peekLeft', 'peekRight', 'fallThrough'];
+
+        // Funktion, um den Hasen zurückzusetzen
+        function resetBunny() {
+            bunny.className = 'bunny-mob'; // Alle Animations-Klassen entfernen
+            bunny.style.cssText = ''; // Alle Inline-Styles (top, left, etc.) entfernen
+        }
+
+        // Die Haupt-Logik
+        function triggerRandomAction() {
+            resetBunny(); // Sauberen Zustand herstellen
+
+            // Eine zufällige Aktion auswählen
+            const action = actions[Math.floor(Math.random() * actions.length)];
+
+            // Die entsprechende CSS-Klasse hinzufügen
+            if (action === 'peekTop') {
+                bunny.classList.add('peek-top');
+            } else if (action === 'peekBottom') {
+                bunny.classList.add('peek-bottom');
+            } else if (action === 'peekLeft') {
+                bunny.classList.add('peek-left');
+            } else if (action === 'peekRight') {
+                bunny.classList.add('peek-right');
+            } else if (action === 'fallThrough') {
+                bunny.classList.add('fall-through');
+                // Kurz warten, damit die Startposition gesetzt ist, dann fallen lassen
+                setTimeout(() => {
+                    bunny.classList.add('falling');
+                }, 100);
+            }
+
+            // Wie lange bleibt er sichtbar?
+            let visibleDuration = 1800; // Standard für Peeks (1.8s)
+            if (action === 'fallThrough') visibleDuration = 4000; // Länger für den Fall (4s)
+
+            // Nach der Sichtbarkeit verschwinden und den nächsten Zyklus starten
+            setTimeout(() => {
+                bunny.style.opacity = '0'; // Sanftes Ausblenden
+                // Nach dem Ausblenden komplett zurücksetzen und warten
+                setTimeout(() => {
+                    startPeekabooCycle(); // Nächsten Zyklus starten
+                }, 600);
+            }, visibleDuration);
+        }
+
+        // Funktion, um den Zyklus mit einer zufälligen Verzögerung zu starten
+        function startPeekabooCycle() {
+            // Zufällige Wartezeit zwischen 2 und 6 Sekunden
+            const delay = Math.floor(Math.random() * 4000) + 2000;
+            setTimeout(triggerRandomAction, delay);
+        }
+
+        // Startet das Spiel, wenn die Seite geladen ist
+        window.onload = startPeekabooCycle;
+    </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frohe Ostern - Peek-a-Boo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f2b24; /* Tiefes Dunkelgrün für Eleganz */
+            --bunny-form-color: #081a16; /* Fast unsichtbares Grün für die Form */
+            --text-color: #ffffff;
+            --accent-pink: #ff9dd3;
+            --egg-blue: #a8dadc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Wichtig für das Versteckspiel */
+            position: relative;
+        }
+
+        /* --- Subtile Hintergrund-Textur --- */
+        .texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        /* --- Text Inhalt (zentriert) --- */
+        .content {
+            position: relative;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            pointer-events: none; /* Man kann "durch" den Text klicken */
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        p {
+            font-size: 1.4rem;
+            font-style: italic;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        /* --- Die schwebenden, gemusterten Eier --- */
+        .egg {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 10;
+            opacity: 0.7;
+            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.2);
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .egg-1 { background-color: var(--accent-pink); top: 15%; left: 15%; animation-delay: 0s; }
+        .egg-2 { background-color: var(--egg-blue); top: 70%; right: 20%; animation-delay: 1s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* =========================================
+           --- Der Peek-a-Boo Hase (JavaScript gesteuert) ---
+           ========================================= */
+        
+        #bunny-mob {
+            position: absolute;
+            width: 150px; /* Schön klein und dezent */
+            height: auto;
+            z-index: 5; /* Hinter dem Text */
+            opacity: 0; /* Startet unsichtbar */
+            transition: transform 0.6s ease-out, opacity 0.3s ease;
+            pointer-events: none; /* Hase stört nicht beim Klicken */
+        }
+
+        /* Basis-Form des Hasen */
+        .bunny-svg {
+            width: 100%;
+            height: auto;
+            opacity: 0.4; /* Dezent im Hintergrund */
+        }
+
+        /* Ohren-Wackeln */
+        #rightEar, #leftEar {
+            animation: wiggle 3s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* --- Die Animations-Klassen --- */
+        
+        /* Guckt kurz von oben rein */
+        .bunny-mob.peek-top {
+            opacity: 1;
+            top: -100px; /* Startposition außerhalb */
+            left: 50%;
+            transform: translateX(-50%) translateY(100px); /* Guckt rein */
+        }
+
+        /* Lugt von unten hoch */
+        .bunny-mob.peek-bottom {
+            opacity: 1;
+            bottom: -100px; /* Startposition außerhalb */
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px); /* Lugt hoch */
+        }
+
+        /* Guckt von links rein (um 90 Grad gedreht) */
+        .bunny-mob.peek-left {
+            opacity: 1;
+            left: -100px; /* Startposition außerhalb */
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg) translateX(100px); /* Guckt rein */
+        }
+
+        /* Guckt von rechts rein (um -90 Grad gedreht) */
+        .bunny-mob.peek-right {
+            opacity: 1;
+            right: -100px; /* Startposition außerhalb */
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg) translateX(-100px); /* Guckt rein */
+        }
+
+        /* Fällt einmal komplett durch */
+        .bunny-mob.fall-through {
+            opacity: 0.8;
+            top: -200px; /* Startposition weit oben */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 3s linear, opacity 0.5s ease; /* Langsamer Fall */
+        }
+        .bunny-mob.fall-through.falling {
+            transform: translateX(-50%) translateY(120vh); /* Fällt nach unten raus */
+        }
+
+        /* Mobil-Anpassung */
+        @media (max-width: 600px) {
+            h1 { font-size: 3rem; }
+            p { font-size: 1.1rem; }
+            #bunny-mob { width: 100px; } /* Noch kleiner auf Handys */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="texture"></div>
+
+    <div class="egg egg-1"></div>
+    <div class="egg egg-2"></div>
+
+    <div class="content">
+        <h1>Frohe Ostern</h1>
+        <p>Genieße die Feiertage und die<br>ersten warmen Sonnenstrahlen.</p>
+    </div>
+
+    <div id="bunny-mob" class="bunny-mob">
+        <svg class="bunny-svg" viewBox="0 0 728 914" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id=" Drawing">
+                <g id="in-drawing">
+                    <g id="leftEar">
+                        <path d="M128.977 175.833C161.935 151.115 208.536 157.998 233.067 191.206C311.87 297.883 301.251 409.044 301.251 409.044Z" fill="var(--bunny-form-color)" />
+                    </g>
+                    <g id="rightEar">
+                        <path d="M598.022 175.833C565.065 151.115 518.464 157.998 493.933 191.206C415.13 297.883 425.749 409.044 425.749 409.044Z" fill="var(--bunny-form-color)" />
+                    </g>
+                    <g id="face">
+                        <path d="M274.598 406.141C269.245 406.141 264.908 410.513 264.908 415.905V432.732Z" fill="#fff" />
+                        <path d="M448.418 406.141C443.065 406.141 438.728 410.513 438.728 415.905V432.732Z" fill="#fff" />
+                        <path d="M401.996 433.001C396.643 433.001 392.306 437.373 392.306 442.765C381.878 453.273 371.451 442.765 361.761 433.001C352.071 442.765 341.643 453.273 331.216 442.765C321.526 433.001 311.836 442.765 311.836 459.327 341.643 472.8 381.878 472.8 411.686 459.327 411.686 442.765 401.996 433.001Z" fill="#fff" />
+                    </g>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        const bunny = document.getElementById('bunny-mob');
+        const actions = ['peekTop', 'peekBottom', 'peekLeft', 'peekRight', 'fallThrough'];
+
+        // Funktion, um den Hasen zurückzusetzen
+        function resetBunny() {
+            bunny.className = 'bunny-mob'; // Alle Animations-Klassen entfernen
+            bunny.style.cssText = ''; // Alle Inline-Styles (top, left, etc.) entfernen
+        }
+
+        // Die Haupt-Logik
+        function triggerRandomAction() {
+            resetBunny(); // Sauberen Zustand herstellen
+
+            // Eine zufällige Aktion auswählen
+            const action = actions[Math.floor(Math.random() * actions.length)];
+
+            // Die entsprechende CSS-Klasse hinzufügen
+            if (action === 'peekTop') {
+                bunny.classList.add('peek-top');
+            } else if (action === 'peekBottom') {
+                bunny.classList.add('peek-bottom');
+            } else if (action === 'peekLeft') {
+                bunny.classList.add('peek-left');
+            } else if (action === 'peekRight') {
+                bunny.classList.add('peek-right');
+            } else if (action === 'fallThrough') {
+                bunny.classList.add('fall-through');
+                // Kurz warten, damit die Startposition gesetzt ist, dann fallen lassen
+                setTimeout(() => {
+                    bunny.classList.add('falling');
+                }, 100);
+            }
+
+            // Wie lange bleibt er sichtbar?
+            let visibleDuration = 1800; // Standard für Peeks (1.8s)
+            if (action === 'fallThrough') visibleDuration = 4000; // Länger für den Fall (4s)
+
+            // Nach der Sichtbarkeit verschwinden und den nächsten Zyklus starten
+            setTimeout(() => {
+                bunny.style.opacity = '0'; // Sanftes Ausblenden
+                // Nach dem Ausblenden komplett zurücksetzen und warten
+                setTimeout(() => {
+                    startPeekabooCycle(); // Nächsten Zyklus starten
+                }, 600);
+            }, visibleDuration);
+        }
+
+        // Funktion, um den Zyklus mit einer zufälligen Verzögerung zu starten
+        function startPeekabooCycle() {
+            // Zufällige Wartezeit zwischen 2 und 6 Sekunden
+            const delay = Math.floor(Math.random() * 4000) + 2000;
+            setTimeout(triggerRandomAction, delay);
+        }
+
+        // Startet das Spiel, wenn die Seite geladen ist
+        window.onload = startPeekabooCycle;
+    </script>
 
 </body>
 </html>
