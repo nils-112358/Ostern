@@ -6,14 +6,9 @@
     <title>Frohe Ostern</title>
     <style>
         :root {
-            /* Neuer dunkelgrüner Hintergrund */
-            --bg-color: #1a3c34; 
-            /* Ein sanfterer Akzent für dunkle Hintergründe */
-            --accent-color: #a8dadc;
-            /* Text ist jetzt hellgrau/weiß für guten Kontrast */
+            --bg-color: #1a3c34; /* Dein dunkelgrüner Hintergrund */
             --text-color: #f1f1f1;
-            /* Container-Hintergrund leicht transparent */
-            --container-bg: rgba(255, 255, 255, 0.05);
+            --bunny-color: rgba(255, 255, 255, 0.9);
         }
 
         * {
@@ -32,99 +27,112 @@
             min-height: 100vh;
             text-align: center;
             padding: 20px;
-            overflow: hidden; /* Verhindert Scrollbars durch die Animation */
-        }
-
-        .container {
-            max-width: 500px;
-            padding: 40px;
-            background: var(--container-bg);
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden; /* Verhindert Scrollbars */
             position: relative;
-            z-index: 10; /* Text über dem Hasen */
         }
 
-        /* Styling für den Hasen (SVG) */
-        .easter-bunny-svg {
-            position: absolute;
-            bottom: -50px; /* Positioniert den Hasen am unteren Rand */
-            right: -20px;
-            width: 150px;  /* Größe angepasst */
-            height: auto;
-            opacity: 0.8;
-            z-index: 1;    /* Hinter dem Text-Container */
+        /* --- Text Animationen --- */
+        
+        .content {
+            z-index: 10;
+            max-width: 600px;
         }
 
-        /* Wackel-Animation für den Hasen */
-        #rightEar,
-        #leftEar,
-        #face {
-            animation: ear 2s linear infinite;
-            transform-origin: center;
-        }
-
-        @keyframes ear {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px); /* Leicht nach oben */
-            }
-            60% {
-                transform: translateY(-5px);
-            }
+        .animated-text {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeSlideUp 0.8s ease-out forwards;
         }
 
         h1 {
             font-weight: 300;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+            font-size: 3.5rem;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
             color: var(--text-color);
+            animation-delay: 0.2s; /* Startet kurz nach dem Laden */
         }
 
         p {
             line-height: 1.6;
-            font-size: 1.1rem;
-            color: #ccc; /* Etwas dunklerer Text für den Inhalt */
-            margin-bottom: 30px;
+            font-size: 1.3rem;
+            color: #ccc;
+            margin-bottom: 40px;
+            animation-delay: 0.6s; /* Startet nach der Überschrift */
         }
 
-        .divider {
-            height: 2px;
+        @keyframes fadeSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Der RIESIGE Hase (SVG) --- */
+        
+        .easter-bunny-svg {
+            position: absolute;
+            bottom: -150px; /* Lugt massiv herein */
+            right: -80px;
+            width: 450px;  /* VIEL größer */
+            height: auto;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        /* Hasen-Wackel-Animation */
+        #rightEar, #leftEar, #face {
+            animation: earWiggle 2.5s linear infinite;
+            transform-origin: center;
+        }
+
+        @keyframes earWiggle {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-8px); }
+        }
+
+        /* --- Bunte Ostereier --- */
+        
+        .egg {
+            position: absolute;
             width: 50px;
-            background-color: var(--accent-color);
-            margin: 20px auto;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0.8;
+            z-index: 2;
+            animation: eggFloat 4s ease-in-out infinite;
         }
 
-        .button {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #457b9d; /* Kräftigeres Blau für den Button auf Grün */
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            font-weight: 600;
+        /* Verschiedene Farben und Positionen */
+        .egg-1 { background-color: #ff9999; top: 15%; left: 10%; animation-delay: 0s; } /* Pastellrot */
+        .egg-2 { background-color: #99ff99; top: 70%; left: 15%; animation-delay: 1s; width: 40px; height: 55px; } /* Pastellgrün */
+        .egg-3 { background-color: #9999ff; top: 25%; right: 15%; animation-delay: 2s; } /* Pastellblau */
+        .egg-4 { background-color: #ffff99; top: 60%; right: 25%; animation-delay: 0.5s; width: 60px; height: 85px; } /* Pastellgelb */
+        .egg-5 { background-color: #ff99ff; top: 80%; left: 40%; animation-delay: 1.5s; } /* Pastellpink */
+
+        @keyframes eggFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
         }
 
-        .button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-            color: #333;
-        }
-
-        /* Responsive Anpassung */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .container { padding: 25px; }
-            .easter-bunny-svg { width: 100px; bottom: -30px; right: -10px; }
+        /* Responsive Anpassung für Mobilgeräte */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            p { font-size: 1.1rem; }
+            .easter-bunny-svg { width: 280px; bottom: -80px; right: -40px; }
+            .egg { width: 35px; height: 50px; }
+            .egg-4 { width: 45px; height: 65px; }
         }
     </style>
 </head>
 <body>
+
+    <div class="egg egg-1"></div>
+    <div class="egg egg-2"></div>
+    <div class="egg egg-3"></div>
+    <div class="egg egg-4"></div>
+    <div class="egg egg-5"></div>
 
     <svg class="easter-bunny-svg" viewBox="0 0 728 914" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="Drawing">
@@ -136,7 +144,6 @@
                     <path d="M598.022 175.833C565.065 151.115 518.464 157.998 493.933 191.206C415.13 297.883 425.749 409.044 425.749 409.044C425.749 409.044 534.476 387.391 613.279 280.714C637.81 247.506 630.98 200.549 598.022 175.833V175.833Z" fill="#FF9DD3" />
                 </g>
                 <path id="body" d="M145.632 584.077C145.632 380.247 221.847 263.415 361.619 263.415C501.39 263.415 577.605 380.247 577.605 584.077L556.767 646.56H166.471L145.632 584.077Z" fill="white" />
-                <path d="M500.518 438.65C493.47 415.976 484.486 396.345 473.649 380.118C447.601 341.129 410.967 322.169 361.619 322.169C312.27 322.169 275.636 341.129 249.589 380.118C238.752 396.345 229.767 415.976 222.719 438.65C215.853 460.74 224.001 484.771 242.934 497.885C268.751 515.765 301.287 520.714 331.193 511.307C351.005 505.075 372.232 505.075 392.044 511.307C421.949 520.714 454.485 515.765 480.303 497.885C499.237 484.771 507.385 460.74 500.518 438.65V438.65Z" fill="#E2E2E2" />
                 <g id="face">
                     <g id="eyes">
                         <path d="M274.598 406.141C269.245 406.141 264.908 410.513 264.908 415.905V432.732C264.908 438.124 269.245 442.496 274.598 442.496C279.95 442.496 284.287 438.124 284.287 432.732V415.905C284.287 410.513 279.949 406.141 274.598 406.141Z" fill="#423E4F" />
@@ -148,15 +155,13 @@
         </g>
     </svg>
 
-    <div class="container">
-        <h1>Frohe Ostern</h1>
-        <div class="divider"></div>
-        <p>
-            Ich wünsche dir eine erholsame Zeit, <br>
-            viele bunte Momente und einen <br>
+    <div class="content">
+        <h1 class="animated-text">Frohe Ostern</h1>
+        <p class="animated-text">
+            Ich wünsche dir eine erholsame Zeit,<br>
+            viele bunte Momente und einen<br>
             fleißigen Osterhasen.
         </p>
-        <a href="#" class="button">Frühlingsgrüße</a>
     </div>
 
 </body>
