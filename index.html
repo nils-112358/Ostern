@@ -1,398 +1,392 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Frohe Ostern!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@1,300;1,500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f2b24; 
-            --egg-pink: #ff9dd3;
-            --egg-blue: #6cd4e0;
-            --egg-yellow: #ffd93d;
-            --egg-lavender: #c5a3ff;
-            --egg-mint: #98fb98;
-            --egg-peach: #ffccaa;
+            --bg-dark:    #0d1f1a;
+            --bg-mid:     #163028;
+            --gold:       #d4a843;
+            --gold-light: #f0cc78;
+            --pink:       #ff9dd3;
+            --blue:       #6cd4e0;
+            --yellow:     #ffd93d;
+            --lavender:   #c5a3ff;
+            --mint:       #98fb98;
+            --peach:      #ffccaa;
+            --red:        #ff6b6b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+```
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient(135deg, #0f2b24 0%, #1a4a3f 100%);
-            color: #fff;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
+    body {
+        font-family: 'Cormorant Garamond', serif;
+        background: var(--bg-dark);
+        color: #fff;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+    }
 
-        .content {
-            position: relative;
-            z-index: 100;
-            text-align: center;
-            pointer-events: none;
-        }
+    /* ── Hintergrund: Mesh-Gradient + Noise ── */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 80% 60% at 20% 80%, rgba(22,80,55,0.7) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(44,90,60,0.5) 0%, transparent 55%),
+            radial-gradient(ellipse 50% 40% at 50% 50%, rgba(18,55,40,0.6) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            font-weight: 700;
-        }
+    /* Grain-Overlay */
+    body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 1;
+    }
 
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-style: italic;
-        }
+    /* ── Goldene Trennlinie oben/unten ── */
+    .rule {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(600px, 90vw);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.55;
+        z-index: 2;
+    }
+    .rule-top    { top: 40px; }
+    .rule-bottom { bottom: 40px; }
 
-        /* --- Der Hase - kompletter Körper --- */
-        #bunny-container {
-            position: absolute;
-            width: 200px;
-            height: 240px;
-            z-index: 10;
-            opacity: 0;
-            transition: all 1.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            pointer-events: none;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
-        }
+    /* ── Content ── */
+    .content {
+        position: relative;
+        z-index: 100;
+        text-align: center;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
 
-        /* Hase lugt von oben herein (Kopf voraus, kopfüber) */
-        .pos-top { 
-            top: -240px; 
-            left: 50%; 
-            transform: translateX(-50%) rotate(180deg);
-        }
-        .show-top { 
-            transform: translateX(-50%) translateY(160px) rotate(180deg);
-            opacity: 1 !important; 
-        }
+    .pre-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: clamp(0.75rem, 2vw, 0.95rem);
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        opacity: 0.75;
+        animation: fadeUp 1.4s ease both;
+    }
 
-        /* Hase lugt von unten herein (normal) */
-        .pos-bottom { 
-            bottom: -240px; 
-            left: 50%; 
-            transform: translateX(-50%) rotate(0deg);
-        }
-        .show-bottom { 
-            transform: translateX(-50%) translateY(-160px) rotate(0deg);
-            opacity: 1 !important; 
-        }
+    h1 {
+        font-family: 'Pinyon Script', cursive;
+        font-size: clamp(3.5rem, 11vw, 7rem);
+        font-weight: 400;
+        background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, #c8922a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+        filter: drop-shadow(0 4px 18px rgba(212,168,67,0.35));
+        animation: fadeUp 1.4s ease 0.15s both;
+        line-height: 1.05;
+    }
 
-        /* Hase lugt von links herein - Kopf voraus, leicht geneigt (60 Grad) */
-        .pos-left {
-            left: -240px;
-            top: 50%;
-            transform: translateY(-50%) rotate(60deg);
-        }
-        .show-left {
-            transform: translateY(-50%) translateX(180px) rotate(60deg);
-            opacity: 1 !important;
-        }
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: fadeUp 1.4s ease 0.3s both;
+    }
+    .divider::before,
+    .divider::after {
+        content: '';
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .divider::after {
+        background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .divider span {
+        color: var(--gold);
+        font-size: 1rem;
+    }
 
-        /* Hase lugt von rechts herein - Kopf voraus, leicht geneigt (-60 Grad) */
-        .pos-right {
-            right: -240px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-60deg);
-        }
-        .show-right {
-            transform: translateY(-50%) translateX(-180px) rotate(-60deg);
-            opacity: 1 !important;
-        }
+    p {
+        font-size: clamp(0.95rem, 2.5vw, 1.25rem);
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(255,255,255,0.72);
+        letter-spacing: 0.05em;
+        animation: fadeUp 1.4s ease 0.45s both;
+    }
 
-        /* Hase schaut schräg von oben links */
-        .pos-topleft {
-            top: -240px;
-            left: -240px;
-            transform: rotate(50deg);
-        }
-        .show-topleft {
-            transform: translate(150px, 150px) rotate(50deg);
-            opacity: 1 !important;
-        }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
-        /* Hase schaut schräg von oben rechts */
-        .pos-topright {
-            top: -240px;
-            right: -240px;
-            transform: rotate(-50deg);
-        }
-        .show-topright {
-            transform: translate(-150px, 150px) rotate(-50deg);
-            opacity: 1 !important;
-        }
+    /* ── Eier ── */
+    .egg {
+        position: absolute;
+        width: 48px;
+        height: 68px;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        z-index: 5;
+        pointer-events: none;
+        animation: eggFloat 5s infinite ease-in-out;
+        /* Rand-Glanz */
+        box-shadow:
+            0 6px 18px rgba(0,0,0,0.35),
+            inset -3px -4px 8px rgba(0,0,0,0.15),
+            inset 2px 2px 6px rgba(255,255,255,0.25);
+    }
 
-        /* Fall-Animation */
-        .fall-start { 
-            top: -260px; 
-            left: 50%; 
-            transform: translateX(-50%) rotate(0deg);
-            opacity: 1 !important; 
-            transition: transform 3s ease-in !important; 
-        }
-        .fall-end { 
-            transform: translateX(-50%) translateY(110vh) rotate(15deg); 
-        }
+    /* Glanz-Highlight auf jedem Ei */
+    .egg::after {
+        content: '';
+        position: absolute;
+        top: 14%;
+        left: 20%;
+        width: 28%;
+        height: 22%;
+        background: rgba(255,255,255,0.4);
+        border-radius: 50%;
+        transform: rotate(-25deg);
+    }
 
-        /* --- Viele bunte Eier --- */
-        .egg {
-            position: absolute;
-            width: 48px;
-            height: 68px;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            z-index: 5;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2), inset -3px -3px 8px rgba(0,0,0,0.1);
-            pointer-events: none;
-            animation: eggFloat 5s infinite ease-in-out;
-        }
+    @keyframes eggFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50%       { transform: translateY(-10px) rotate(4deg); }
+    }
 
-        @keyframes eggFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(3deg); }
-        }
+    .egg-1  { top:8%;   left:4%;   background:repeating-linear-gradient(0deg,var(--pink) 0,var(--pink) 8px,#fff 8px,#fff 16px);  animation-delay:0s;   width:44px;height:62px; }
+    .egg-2  { bottom:8%;right:4%;  background:repeating-linear-gradient(45deg,var(--blue) 0,var(--blue) 10px,#fff 10px,#fff 20px); animation-delay:0.5s; }
+    .egg-3  { top:18%;  right:6%;  background:repeating-linear-gradient(90deg,var(--yellow) 0,var(--yellow) 7px,#fff 7px,#fff 14px); animation-delay:1s;   width:42px;height:60px; }
+    .egg-4  { bottom:18%;left:6%;  background:repeating-linear-gradient(0deg,var(--lavender) 0,var(--lavender) 6px,#fff 6px,#fff 12px); animation-delay:1.5s;width:44px;height:62px; }
+    .egg-5  { top:42%;  left:2%;   background:repeating-linear-gradient(135deg,var(--mint) 0,var(--mint) 9px,#fff 9px,#fff 18px); animation-delay:0.8s; width:40px;height:56px; }
+    .egg-6  { bottom:33%;right:3%; background:repeating-linear-gradient(0deg,var(--peach) 0,var(--peach) 8px,#fff 8px,#fff 16px); animation-delay:2s;   width:46px;height:64px; }
+    .egg-7  { top:55%;  right:10%; background:repeating-linear-gradient(45deg,var(--red) 0,var(--red) 8px,#fff 8px,#fff 16px);  animation-delay:0.3s; width:43px;height:59px; }
+    .egg-8  { bottom:6%;left:14%;  background:repeating-linear-gradient(90deg,#74b9ff 0,#74b9ff 8px,#fff 8px,#fff 16px);       animation-delay:1.2s; width:47px;height:67px; }
+    .egg-9  { top:72%;  left:9%;   background:repeating-linear-gradient(0deg,#fdcb6e 0,#fdcb6e 7px,#fff 7px,#fff 14px);        animation-delay:0.6s; width:41px;height:57px; }
+    .egg-10 { top:6%;   right:14%; background:repeating-linear-gradient(135deg,#a29bfe 0,#a29bfe 6px,#fff 6px,#fff 12px);       animation-delay:1.8s; width:45px;height:63px; }
 
-        /* Verschiedene Eier-Stile mit Mustern */
-        .egg-1 {
-            top: 12%;
-            left: 5%;
-            background: repeating-linear-gradient(0deg, var(--egg-pink), var(--egg-pink) 8px, #fff 8px, #fff 16px);
-            animation-delay: 0s;
-        }
-        .egg-2 {
-            bottom: 10%;
-            right: 5%;
-            background: repeating-linear-gradient(45deg, var(--egg-blue), var(--egg-blue) 10px, #fff 10px, #fff 20px);
-            animation-delay: 0.5s;
-        }
-        .egg-3 {
-            top: 20%;
-            right: 8%;
-            background: radial-gradient(circle at 30% 40%, var(--egg-yellow) 5px, #ffb347 15px);
-            background-size: 20px 20px;
-            width: 42px;
-            height: 60px;
-            animation-delay: 1s;
-        }
-        .egg-4 {
-            bottom: 20%;
-            left: 8%;
-            background: repeating-linear-gradient(90deg, var(--egg-lavender), var(--egg-lavender) 7px, #fff 7px, #fff 14px);
-            width: 44px;
-            height: 62px;
-            animation-delay: 1.5s;
-        }
-        .egg-5 {
-            top: 40%;
-            left: 3%;
-            background: repeating-linear-gradient(0deg, var(--egg-mint), var(--egg-mint) 6px, #fff 6px, #fff 12px);
-            width: 40px;
-            height: 56px;
-            animation-delay: 0.8s;
-        }
-        .egg-6 {
-            bottom: 35%;
-            right: 4%;
-            background: repeating-linear-gradient(135deg, var(--egg-peach), var(--egg-peach) 9px, #fff 9px, #fff 18px);
-            width: 46px;
-            height: 64px;
-            animation-delay: 2s;
-        }
-        .egg-7 {
-            top: 55%;
-            right: 12%;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 5px, transparent 5px, transparent 10px);
-            width: 43px;
-            height: 59px;
-            animation-delay: 0.3s;
-        }
-        .egg-8 {
-            bottom: 8%;
-            left: 15%;
-            background: repeating-linear-gradient(0deg, #74b9ff, #74b9ff 8px, #fff 8px, #fff 16px);
-            width: 47px;
-            height: 67px;
-            animation-delay: 1.2s;
-        }
-        .egg-9 {
-            top: 70%;
-            left: 10%;
-            background: repeating-linear-gradient(45deg, #fdcb6e, #fdcb6e 7px, #fff 7px, #fff 14px);
-            width: 41px;
-            height: 57px;
-            animation-delay: 0.6s;
-        }
-        .egg-10 {
-            top: 8%;
-            right: 15%;
-            background: repeating-linear-gradient(90deg, #a29bfe, #a29bfe 6px, #fff 6px, #fff 12px);
-            width: 45px;
-            height: 63px;
-            animation-delay: 1.8s;
-        }
-    </style>
+    /* ── Hase ── */
+    #bunny-container {
+        position: absolute;
+        width: 180px;
+        height: 216px;
+        z-index: 50;
+        pointer-events: none;
+        filter: drop-shadow(0 8px 20px rgba(0,0,0,0.45));
+        opacity: 0;
+        top: -300px;
+        left: -300px;
+    }
+
+    /* ─── Slide-Positionen ───
+       Idee: Hase ist 216px hoch. Kopf ist ca. obere 100px (Ohren+Kopf).
+       "peek" = nur Kopf ragt rein → translateY/X so dass ~80px sichtbar.
+       Winkel: 55–65° statt 90°.
+    ─── */
+
+    /* TOP: kopfüber, 180° → Ohren zuerst von oben */
+    #bunny-container.pos-top  { top:0; left:50%; right:auto; bottom:auto;
+        transform: translateX(-50%) translateY(-100%) rotate(180deg); opacity:1; }
+    #bunny-container.show-top { transform: translateX(-50%) translateY(-55%) rotate(180deg); opacity:1; }
+
+    /* BOTTOM: normal, von unten */
+    #bunny-container.pos-bottom  { bottom:0; top:auto; left:50%; right:auto;
+        transform: translateX(-50%) translateY(100%) rotate(0deg); opacity:1; }
+    #bunny-container.show-bottom { transform: translateX(-50%) translateY(55%) rotate(0deg); opacity:1; }
+
+    /* LEFT: 60° Winkel, von links */
+    #bunny-container.pos-left  { top:50%; left:0; right:auto; bottom:auto;
+        transform: translateY(-50%) translateX(-100%) rotate(60deg); opacity:1; }
+    #bunny-container.show-left { transform: translateY(-50%) translateX(-62%) rotate(60deg); opacity:1; }
+
+    /* RIGHT: -60° Winkel, von rechts */
+    #bunny-container.pos-right  { top:50%; right:0; left:auto; bottom:auto;
+        transform: translateY(-50%) translateX(100%) rotate(-60deg); opacity:1; }
+    #bunny-container.show-right { transform: translateY(-50%) translateX(62%) rotate(-60deg); opacity:1; }
+
+    /* TOPLEFT: 55° von oben links */
+    #bunny-container.pos-topleft  { top:0; left:0; right:auto; bottom:auto;
+        transform: translate(-100%, -100%) rotate(55deg); opacity:1; }
+    #bunny-container.show-topleft { transform: translate(-60%, -60%) rotate(55deg); opacity:1; }
+
+    /* TOPRIGHT: -55° von oben rechts */
+    #bunny-container.pos-topright  { top:0; right:0; left:auto; bottom:auto;
+        transform: translate(100%, -100%) rotate(-55deg); opacity:1; }
+    #bunny-container.show-topright { transform: translate(60%, -60%) rotate(-55deg); opacity:1; }
+
+    /* fall */
+    #bunny-container.fall-start {
+        top:0; left:50%; right:auto; bottom:auto;
+        transform: translateX(-50%) translateY(-110%) rotate(0deg);
+        opacity:1;
+    }
+    #bunny-container.fall-end {
+        transform: translateX(-50%) translateY(110vh) rotate(20deg);
+    }
+</style>
+```
+
 </head>
 <body>
 
-    <!-- Viele bunte Ostereier -->
-    <div class="egg egg-1"></div>
-    <div class="egg egg-2"></div>
-    <div class="egg egg-3"></div>
-    <div class="egg egg-4"></div>
-    <div class="egg egg-5"></div>
-    <div class="egg egg-6"></div>
-    <div class="egg egg-7"></div>
-    <div class="egg egg-8"></div>
-    <div class="egg egg-9"></div>
-    <div class="egg egg-10"></div>
+```
+<div class="rule rule-top"></div>
+<div class="rule rule-bottom"></div>
 
-    <div class="content">
-        <h1>Frohe Ostern</h1>
-        <p>Genieße die sonnigen Tage!</p>
-    </div>
+<div class="egg egg-1"></div>
+<div class="egg egg-2"></div>
+<div class="egg egg-3"></div>
+<div class="egg egg-4"></div>
+<div class="egg egg-5"></div>
+<div class="egg egg-6"></div>
+<div class="egg egg-7"></div>
+<div class="egg egg-8"></div>
+<div class="egg egg-9"></div>
+<div class="egg egg-10"></div>
 
-    <div id="bunny-container">
-        <!-- Niedlicher Hase mit vollem Körper -->
-        <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
-            <!-- Linkes Ohr -->
-            <ellipse cx="145" cy="70" rx="28" ry="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
-            <!-- Rechtes Ohr -->
-            <ellipse cx="255" cy="70" rx="28" ry="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
-            <!-- Innenohren -->
-            <ellipse cx="145" cy="75" rx="16" ry="45" fill="#FFB7C5"/>
-            <ellipse cx="255" cy="75" rx="16" ry="45" fill="#FFB7C5"/>
-            
-            <!-- Kopf -->
-            <circle cx="200" cy="150" r="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
-            
-            <!-- Wangen -->
-            <circle cx="165" cy="165" r="12" fill="#FFB7C5" opacity="0.6"/>
-            <circle cx="235" cy="165" r="12" fill="#FFB7C5" opacity="0.6"/>
-            
-            <!-- Augen -->
-            <circle cx="178" cy="145" r="9" fill="#2D2D2D"/>
-            <circle cx="222" cy="145" r="9" fill="#2D2D2D"/>
-            <circle cx="181" cy="142" r="3" fill="#FFFFFF"/>
-            <circle cx="225" cy="142" r="3" fill="#FFFFFF"/>
-            
-            <!-- Nase -->
-            <ellipse cx="200" cy="165" rx="7" ry="5" fill="#FF8DA1"/>
-            
-            <!-- Mund -->
-            <path d="M192 172 Q200 180 208 172" stroke="#2D2D2D" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <line x1="200" y1="170" x2="200" y2="176" stroke="#2D2D2D" stroke-width="1.5"/>
-            
-            <!-- Barthaare -->
-            <line x1="155" y1="160" x2="125" y2="155" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="155" y1="165" x2="123" y2="165" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="245" y1="160" x2="275" y2="155" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="245" y1="165" x2="277" y2="165" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
-            
-            <!-- Körper -->
-            <ellipse cx="200" cy="280" rx="70" ry="80" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
-            
-            <!-- Bauch -->
-            <ellipse cx="200" cy="285" rx="45" ry="55" fill="#FFF5EE" opacity="0.5"/>
-            
-            <!-- Linker Arm/Pfote -->
-            <ellipse cx="140" cy="270" rx="22" ry="15" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5" transform="rotate(-20 140 270)"/>
-            <!-- Rechter Arm/Pfote -->
-            <ellipse cx="260" cy="270" rx="22" ry="15" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5" transform="rotate(20 260 270)"/>
-            
-            <!-- Linkes Bein -->
-            <ellipse cx="160" cy="360" rx="25" ry="18" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
-            <!-- Rechtes Bein -->
-            <ellipse cx="240" cy="360" rx="25" ry="18" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
-            
-            <!-- Pfotenabdrücke -->
-            <circle cx="155" cy="365" r="4" fill="#FFB7C5" opacity="0.4"/>
-            <circle cx="165" cy="365" r="4" fill="#FFB7C5" opacity="0.4"/>
-            <circle cx="235" cy="365" r="4" fill="#FFB7C5" opacity="0.4"/>
-            <circle cx="245" cy="365" r="4" fill="#FFB7C5" opacity="0.4"/>
-            
-            <!-- Schwanz -->
-            <circle cx="270" cy="310" r="16" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
-            
-            <!-- Osterkorb mit buntem Ei -->
-            <path d="M170 310 L230 310 L240 335 L160 335 Z" fill="#D4A574" stroke="#B8895C" stroke-width="1.5"/>
-            <line x1="165" y1="318" x2="235" y2="318" stroke="#B8895C" stroke-width="1"/>
-            <line x1="163" y1="325" x2="237" y2="325" stroke="#B8895C" stroke-width="1"/>
-            <ellipse cx="200" cy="312" rx="14" ry="18" fill="#FF9DD3"/>
-            <ellipse cx="200" cy="312" rx="9" ry="12" fill="#FFB7C5" opacity="0.5"/>
-            <ellipse cx="200" cy="308" rx="4" ry="3" fill="#FFFFFF" opacity="0.8"/>
-        </svg>
-    </div>
+<div class="content">
+    <div class="pre-title">✦ &nbsp; wünschet dir &nbsp; ✦</div>
+    <h1>Frohe Ostern</h1>
+    <div class="divider"><span>✦</span></div>
+    <p>Genieße die sonnigen Tage</p>
+</div>
 
-    <script>
-        const bunny = document.getElementById('bunny-container');
-        const actions = ['top', 'bottom', 'left', 'right', 'topleft', 'topright', 'fall'];
-        let animationTimeout = null;
-        let isAnimating = false;
+<div id="bunny-container">
+    <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ohren -->
+        <ellipse cx="145" cy="70" rx="28" ry="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
+        <ellipse cx="255" cy="70" rx="28" ry="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
+        <ellipse cx="145" cy="75" rx="16" ry="45" fill="#FFB7C5"/>
+        <ellipse cx="255" cy="75" rx="16" ry="45" fill="#FFB7C5"/>
+        <!-- Kopf -->
+        <circle cx="200" cy="150" r="65" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
+        <!-- Wangen -->
+        <circle cx="165" cy="168" r="14" fill="#FFB7C5" opacity="0.5"/>
+        <circle cx="235" cy="168" r="14" fill="#FFB7C5" opacity="0.5"/>
+        <!-- Augen -->
+        <circle cx="178" cy="145" r="9" fill="#2D2D2D"/>
+        <circle cx="222" cy="145" r="9" fill="#2D2D2D"/>
+        <circle cx="181" cy="142" r="3" fill="#FFFFFF"/>
+        <circle cx="225" cy="142" r="3" fill="#FFFFFF"/>
+        <!-- Nase -->
+        <ellipse cx="200" cy="165" rx="7" ry="5" fill="#FF8DA1"/>
+        <!-- Mund -->
+        <path d="M192 172 Q200 181 208 172" stroke="#2D2D2D" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <line x1="200" y1="170" x2="200" y2="176" stroke="#2D2D2D" stroke-width="1.5"/>
+        <!-- Barthaare -->
+        <line x1="154" y1="160" x2="122" y2="154" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="154" y1="167" x2="120" y2="167" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="246" y1="160" x2="278" y2="154" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="246" y1="167" x2="280" y2="167" stroke="#B0A090" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Körper -->
+        <ellipse cx="200" cy="280" rx="70" ry="80" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="2"/>
+        <ellipse cx="200" cy="285" rx="45" ry="55" fill="#FFF5EE" opacity="0.5"/>
+        <!-- Arme -->
+        <ellipse cx="138" cy="268" rx="22" ry="15" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5" transform="rotate(-22 138 268)"/>
+        <ellipse cx="262" cy="268" rx="22" ry="15" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5" transform="rotate(22 262 268)"/>
+        <!-- Beine -->
+        <ellipse cx="160" cy="360" rx="25" ry="18" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
+        <ellipse cx="240" cy="360" rx="25" ry="18" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
+        <!-- Pfoten -->
+        <circle cx="153" cy="365" r="4" fill="#FFB7C5" opacity="0.45"/>
+        <circle cx="164" cy="366" r="4" fill="#FFB7C5" opacity="0.45"/>
+        <circle cx="234" cy="366" r="4" fill="#FFB7C5" opacity="0.45"/>
+        <circle cx="245" cy="365" r="4" fill="#FFB7C5" opacity="0.45"/>
+        <!-- Schwanz -->
+        <circle cx="272" cy="312" r="16" fill="#FFFFFF" stroke="#E8DCD0" stroke-width="1.5"/>
+        <!-- Korb -->
+        <path d="M168 308 L232 308 L242 336 L158 336 Z" fill="#D4A574" stroke="#B8895C" stroke-width="1.5"/>
+        <line x1="162" y1="316" x2="238" y2="316" stroke="#B8895C" stroke-width="1"/>
+        <line x1="160" y1="324" x2="240" y2="324" stroke="#B8895C" stroke-width="1"/>
+        <!-- Ei im Korb -->
+        <ellipse cx="200" cy="310" rx="14" ry="18" fill="#FF9DD3"/>
+        <ellipse cx="200" cy="308" rx="4" ry="3" fill="#FFFFFF" opacity="0.75"/>
+    </svg>
+</div>
 
-        function trigger() {
-            if (isAnimating) return;
-            isAnimating = true;
-            
-            if (animationTimeout) {
-                clearTimeout(animationTimeout);
-            }
-            
-            // Reset
-            bunny.style.transition = '';
-            bunny.style.opacity = '0';
-            bunny.classList.remove(
-                'fall-start', 'fall-end', 
-                'show-top', 'show-bottom', 'show-left', 'show-right', 'show-topleft', 'show-topright',
-                'pos-top', 'pos-bottom', 'pos-left', 'pos-right', 'pos-topleft', 'pos-topright'
-            );
-            
-            // Force reflow
-            void bunny.offsetHeight;
-            
-            const action = actions[Math.floor(Math.random() * actions.length)];
+<script>
+    const bunny = document.getElementById('bunny-container');
+    const SLIDES = ['top','bottom','left','right','topleft','topright'];
+    let timer = null;
 
-            if (action === 'fall') {
-                bunny.style.transition = 'transform 3s ease-in';
-                bunny.classList.add('fall-start');
-                
-                animationTimeout = setTimeout(() => {
-                    isAnimating = false;
-                    trigger();
-                }, 3300);
-            } else {
-                // Langsame, sanfte Transition
-                bunny.style.transition = 'all 1.8s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-                bunny.classList.add('pos-' + action);
-                
-                setTimeout(() => {
-                    bunny.classList.add('show-' + action);
-                }, 20);
+    function trigger() {
+        clearTimeout(timer);
 
-                animationTimeout = setTimeout(() => {
-                    bunny.style.opacity = '0';
-                    setTimeout(() => {
-                        isAnimating = false;
-                        trigger();
-                    }, 400);
-                }, 2600);
-            }
+        // Reset: unsichtbar, keine Transition, keine Klassen
+        bunny.style.transition = 'none';
+        bunny.style.opacity = '0';
+        bunny.className = '';
+        void bunny.offsetWidth;
+
+        const isFall = Math.random() < 0.12;
+
+        if (isFall) {
+            bunny.style.opacity = '1';
+            bunny.className = 'fall-start';
+            void bunny.offsetWidth;
+            bunny.style.transition = 'transform 3000ms cubic-bezier(0.3,0,0.7,1)';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                bunny.classList.add('fall-end');
+            }));
+            timer = setTimeout(trigger, 3400);
+
+        } else {
+            const action = SLIDES[Math.floor(Math.random() * SLIDES.length)];
+            const SLIDE_IN  = 1000; // ms reinfahren
+            const PEEK      = 1800; // ms gucken
+            const SLIDE_OUT = 900;  // ms rausfahren
+
+            // Startposition (off-screen)
+            bunny.style.opacity = '1';
+            bunny.className = 'pos-' + action;
+            void bunny.offsetWidth;
+
+            // Reinfahren: show-* setzen (Kopf sichtbar)
+            bunny.style.transition = `transform ${SLIDE_IN}ms cubic-bezier(0.2,0.9,0.3,1.1)`;
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                bunny.classList.add('show-' + action);
+            }));
+
+            // Nach PEEK: wieder rausfahren → pos-* transform zurück
+            timer = setTimeout(() => {
+                bunny.style.transition = `transform ${SLIDE_OUT}ms cubic-bezier(0.4,0,0.8,0.3)`;
+                bunny.classList.remove('show-' + action);
+                // pos-* ist noch aktiv → springt zurück zur Off-Screen-Position
+                timer = setTimeout(trigger, SLIDE_OUT + 200);
+            }, SLIDE_IN + PEEK);
         }
+    }
 
-        window.onload = () => {
-            setTimeout(trigger, 800);
-        };
-        
-        window.onbeforeunload = () => {
-            if (animationTimeout) {
-                clearTimeout(animationTimeout);
-            }
-        };
-    </script>
+    window.addEventListener('load', () => setTimeout(trigger, 900));
+    window.addEventListener('beforeunload', () => clearTimeout(timer));
+</script>
+```
+
 </body>
 </html>
